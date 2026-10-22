@@ -1,0 +1,14 @@
+{
+  "name": "slimctx",
+  "description": "slimctx: lossless-by-default token reduction for Claude Code and Codex",
+  "owner": {
+    "name": "tauseefahmad"
+  },
+  "plugins": [
+    {
+      "name": "slimctx",
+      "source": "./",
+      "description": "Lossless-by-default token reduction for Claude Code and Codex."
+    }
+  ]
+}

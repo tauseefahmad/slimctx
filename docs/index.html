@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>slimctx — reduce Claude Code and Codex token usage (free plugin)</title>
+<meta name="description" content="slimctx is a free open-source plugin that cuts Claude Code and OpenAI Codex CLI token usage by condensing git, test, build, log, JSON and grep output before the model reads it. 82% fewer tool-output tokens on a real repo, nothing lost.">
+<meta name="keywords" content="reduce Claude Code token usage, Claude Code plugin, Codex CLI tokens, save tokens Claude, token compression, Claude Code hooks, rtk alternative, caveman alternative, context window, LLM cost">
+<link rel="canonical" href="https://tauseefahmad.github.io/slimctx/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="slimctx — reduce Claude Code and Codex token usage">
+<meta property="og:description" content="Free plugin: condenses tool output before Claude Code or Codex reads it. 82% fewer tool-output tokens on a real repo, originals always recoverable.">
+<meta property="og:url" content="https://tauseefahmad.github.io/slimctx/">
+<meta name="twitter:card" content="summary">
+<meta name="color-scheme" content="light dark">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "slimctx",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "description": "Plugin for Claude Code and OpenAI Codex CLI that reduces token usage by condensing tool output before the model reads it, with lossless recovery of the original.",
+      "url": "https://tauseefahmad.github.io/slimctx/",
+      "codeRepository": "https://github.com/tauseefahmad/slimctx",
+      "license": "https://opensource.org/licenses/MIT",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@type": "Person", "name": "tauseefahmad", "url": "https://github.com/tauseefahmad" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "How do I reduce Claude Code token usage?", "acceptedAnswer": { "@type": "Answer", "text": "Most tokens in a coding session are tool output such as test logs, git diffs, installs, search results and whole-file reads. Install slimctx so that output is condensed before Claude reads it, keep CLAUDE.md short, and clear the context between unrelated tasks." } },
+        { "@type": "Question", "name": "Does slimctx work with OpenAI Codex CLI?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The same repository is a Codex plugin; its hooks condense Bash output, including commands that exit non-zero." } },
+        { "@type": "Question", "name": "Will the model miss something important?", "acceptedAnswer": { "@type": "Answer", "text": "Error lines are always kept, explicit file reads are never touched, and every condensed output keeps its full original on disk with the path in a footer, so the agent can read it back." } },
+        { "@type": "Question", "name": "How is slimctx different from rtk or caveman?", "acceptedAnswer": { "@type": "Answer", "text": "rtk rewrites known commands before they run and caveman shortens replies. slimctx condenses the output of any command after it runs, keeps originals recoverable, covers Grep, Glob, large file reads and Codex, and can run next to either." } }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#5d5b55;--line:#e3e0d8;--card:#fff;--accent:#b4532a;--code:#f2efe8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151514;--fg:#ecebe6;--muted:#a6a39b;--line:#2e2d2a;--card:#1d1c1a;--accent:#e4875a;--code:#23221f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:48px 16px 80px}
+h1{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.15;margin:0 0 12px}
+h2{font-size:1.4rem;margin:48px 0 12px}
+p,li{color:var(--fg)}
+.lede{font-size:1.15rem;color:var(--muted);max-width:44em}
+a{color:var(--accent)}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:.92rem}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:28px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat b{display:block;font-size:1.7rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.92rem}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;white-space:nowrap}
+td.n,th.n{text-align:right}
+.cta{display:inline-block;margin-top:8px;padding:10px 18px;border-radius:8px;background:var(--accent);color:#fff;text-decoration:none;font-weight:600}
+footer{margin-top:64px;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+<h1>Reduce Claude Code and Codex token usage with slimctx</h1>
+<p class="lede">A free, open-source plugin that condenses tool output — git, tests, builds, installs, logs, JSON, file lists and grep — before Claude Code or OpenAI Codex CLI reads it. Nothing is lost: every condensed output keeps its original on disk, and the agent can read it back.</p>
+<a class="cta" href="https://github.com/tauseefahmad/slimctx">View on GitHub</a>
+
+<div class="stats">
+  <div class="stat"><b>82%</b><span>fewer tool-output tokens on a real repository</span></div>
+  <div class="stat"><b>0</b><span>dependencies besides Node 18+</span></div>
+  <div class="stat"><b>2</b><span>hosts: Claude Code and Codex CLI</span></div>
+  <div class="stat"><b>100%</b><span>local — no network, no telemetry</span></div>
+</div>
+
+<h2>Install in Claude Code</h2>
+<pre><code>claude plugin marketplace add tauseefahmad/slimctx
+claude plugin install slimctx@slimctx</code></pre>
+<p>Restart Claude Code. Run <code>/slimctx:gain</code> later to see what it saved, <code>/slimctx:audit</code> to see what loads before your first message, and <code>/slimctx:doctor</code> to check the setup.</p>
+
+<h2>Install in OpenAI Codex CLI</h2>
+<pre><code>codex plugin marketplace add tauseefahmad/slimctx</code></pre>
+<p>Enable it in <code>/plugins</code>, then trust its hooks in <code>/hooks</code>.</p>
+
+<h2>What it does</h2>
+<ul>
+  <li><strong>Condenses any command's output after it runs</strong>: removes ANSI codes and progress bars, folds repeated and near-identical lines, drops passing tests and download noise, reshapes <code>git log</code>, <code>git status</code>, <code>git diff</code> and <code>ls -l</code>, and condenses large JSON.</li>
+  <li><strong>Keeps every error line</strong>, even one buried in the middle of a 2,000-line log.</li>
+  <li><strong>Lossless recovery</strong>: the untouched original is saved, and its path is in the footer.</li>
+  <li><strong>Skips repeats</strong>: identical output seen again becomes a one-line pointer.</li>
+  <li><strong>Outline-first reads</strong>: reading a 600+ line source file first returns its symbol outline with line numbers.</li>
+  <li><strong>Caps Grep and Glob</strong> results per file and per directory.</li>
+  <li><strong>Short reply style</strong> (~60 tokens of rules), with plain language kept for warnings and destructive steps.</li>
+</ul>
+
+<h2>Benchmark: slimctx vs rtk</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>command</th><th class="n">raw</th><th class="n">rtk</th><th class="n">slimctx</th></tr></thead>
+<tbody>
+<tr><td>git log -40</td><td class="n">16,526</td><td class="n">4,229</td><td class="n">1,835</td></tr>
+<tr><td>git diff HEAD~3</td><td class="n">50,456</td><td class="n">11,719</td><td class="n">4,995</td></tr>
+<tr><td>ls -la</td><td class="n">6,628</td><td class="n">2,550</td><td class="n">642</td></tr>
+<tr><td>find . -name "*.mjs"</td><td class="n">24,339</td><td class="n">—</td><td class="n">1,420</td></tr>
+<tr><td>gh api …/issues (JSON)</td><td class="n">42,417</td><td class="n">42,417</td><td class="n">13,929</td></tr>
+<tr><td>git status</td><td class="n">275</td><td class="n">147</td><td class="n">213</td></tr>
+</tbody></table></div>
+<p>Estimated tokens. rtk does better on short <code>git status</code>; slimctx does better on long output, and keeps the original recoverable. Full table and method are in the <a href="https://github.com/tauseefahmad/slimctx#benchmark-slimctx-vs-rtk-on-real-output">README</a>.</p>
+
+<h2>FAQ</h2>
+<h3>How do I reduce Claude Code token usage?</h3>
+<p>Most tokens in a coding session are tool output. Condense it with slimctx, keep CLAUDE.md short, and clear the context between unrelated tasks.</p>
+<h3>Does it work with Codex?</h3>
+<p>Yes. The same repository is a Codex plugin, and it condenses Bash output there too, including failing commands.</p>
+<h3>Is my code sent anywhere?</h3>
+<p>No. Everything runs locally in Node.</p>
+
+<footer>MIT licensed · <a href="https://github.com/tauseefahmad/slimctx">github.com/tauseefahmad/slimctx</a> · <a href="https://github.com/tauseefahmad/slimctx/releases">releases</a></footer>
+</main>
+</body>
+</html>

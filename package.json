@@ -1,0 +1,47 @@
+{
+  "name": "slimctx",
+  "version": "0.1.0",
+  "description": "Lossless-by-default token reduction for Claude Code and Codex",
+  "type": "module",
+  "bin": {
+    "slimctx": "bin/slimctx.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/slimctx.test.mjs",
+    "bench": "node bench/bench.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tauseefahmad/slimctx.git"
+  },
+  "homepage": "https://tauseefahmad.github.io/slimctx/",
+  "bugs": "https://github.com/tauseefahmad/slimctx/issues",
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "codex",
+    "codex-cli",
+    "tokens",
+    "token-usage",
+    "context-window",
+    "llm",
+    "hooks",
+    "compression",
+    "ai-coding"
+  ],
+  "files": [
+    "bin",
+    "lib",
+    "hooks",
+    "commands",
+    "skills",
+    ".claude-plugin",
+    ".codex-plugin",
+    "README.md",
+    "LICENSE"
+  ]
+}
