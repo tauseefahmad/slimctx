@@ -32,7 +32,7 @@ fs.writeFileSync(cl, `# Changelog\n\n${entry}${old}`);
 
 run(process.execPath, ['--test', 'test/slimctx.test.mjs']);
 run('git', ['add', '-A']);
-run('git', ['commit', '-m', `release: v${v}\n\n${notes.map((n) => `- ${n}`).join('\n')}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`]);
+run('git', ['commit', '-m', `release: v${v}\n\n${notes.map((n) => `- ${n}`).join('\n')}`]);
 run('git', ['tag', `v${v}`]);
 run('git', ['push', 'origin', 'HEAD', '--tags']);
 run('gh', ['release', 'create', `v${v}`, '--title', `slimctx v${v}`, '--notes', entry.split('\n').slice(2).join('\n')]);
