@@ -1,6 +1,6 @@
 {
   "name": "slimctx",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Condenses shell output before Codex reads it (originals kept on disk), cross-call dedup, short reply-style rules, savings report.",
   "hooks": "./hooks/codex-hooks.json"
 }

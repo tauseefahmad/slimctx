@@ -243,3 +243,33 @@ test('codex hook command resolves via PLUGIN_ROOT env', () => {
   assert.equal(r.status, 0, r.stderr.toString());
   assert.equal(JSON.parse(r.stdout.toString()).decision, 'block');
 });
+
+test('a script printing its own PASS/FAIL report keeps every line', () => {
+  const report = ['== run-a.json', ...Array.from({ length: 12 }, (_, i) => `  PASS case-${i} | answer text ${i}`), '  FAIL case-x | wrong answer'].join('\n');
+  const command = `python -I -c "import json\nfor f in ('a.json',): print(t['tests'])"`;
+  const { text, passes } = compressText(report, { command, cfg });
+  assert.ok(!passes.includes('tests'));
+  assert.match(text, /PASS case-11 \| answer text 11/);
+});
+
+test('jest file header PASS lines still drop behind a test command', () => {
+  const out = [...Array.from({ length: 8 }, (_, i) => `PASS src/m${i}.test.ts (1.2 s)`), 'Tests:       8 passed, 8 total'].join('\n');
+  const { text, passes } = compressText(out, { command: 'npx jest', cfg });
+  assert.ok(passes.includes('tests'));
+  assert.doesNotMatch(text, /m3\.test\.ts/);
+  assert.match(text, /8 passed/);
+});
+
+test('truncate keeps section headers from the omitted middle', () => {
+  const words = ['Dataset', 'Catalog', 'Fair', 'Order', 'Error', 'Access', 'Report', 'Service', 'Config', 'Mapper', 'Schema', 'Index'];
+  const lines = [];
+  for (let p = 1; p <= 16; p++) {
+    lines.push(`repo part ${p} at 2026-10-24 (12 files): message ${p}`);
+    for (let f = 0; f < 12; f++) lines.push(`    M ${f % 2 ? 'backend/src' : 'frontend/app'}/${words[(f + p) % 12].toLowerCase()}/${words[(f * 5 + p) % 12]}${words[f]}.${f % 3 ? 'java' : 'tsx'}`);
+  }
+  const { text, passes } = compressText(lines.join('\n'), { command: 'python plan.py --dry-run', cfg });
+  assert.ok(passes.includes('truncate'));
+  for (let p = 1; p <= 16; p++) assert.match(text, new RegExp(`repo part ${p} at`));
+  assert.match(text, /lines omitted/);
+  assert.ok(text.split('\n').length < lines.length * 0.7);
+});
