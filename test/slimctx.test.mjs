@@ -125,6 +125,11 @@ test('explicit file reads pass through untouched; shell greps get the per-file c
   assert.equal(onClaudePost(bash('sed -n 1,400p src/app.js', F.logSpam)), null);
   assert.equal(onClaudePost(bash('wc -l a.md; cat a.md', F.logSpam)), null);
   assert.equal(onClaudePost(bash('cd x && head -500 server.log', F.logSpam)), null);
+  // PowerShell's head/tail: the model picked those lines.
+  const ps = (command) => ({ ...bash(command, F.logSpam), tool_name: 'PowerShell' });
+  assert.equal(onClaudePost(ps('mvn -B verify 2>&1 | Select-Object -Last 300')), null);
+  assert.equal(onClaudePost(ps('Get-ChildItem -Recurse | select -first 400')), null);
+  assert.ok(onClaudePost(ps('mvn -B verify 2>&1')));
   const hits = Array.from({ length: 3 }, (_, f) => Array.from({ length: 80 }, (_, i) => `lib/m${f}.mjs:${i + 1}:  const cat = load(${i});`).join('\n')).join('\n');
   const out = onClaudePost(bash('grep -rn "const cat" lib', hits)).hookSpecificOutput.updatedToolOutput.stdout;
   assert.match(out, /lib\/m0\.mjs: … 65 more matches in this file/);
