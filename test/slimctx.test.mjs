@@ -125,6 +125,9 @@ test('explicit file reads pass through untouched; shell greps get the per-file c
   assert.equal(onClaudePost(bash('sed -n 1,400p src/app.js', F.logSpam)), null);
   assert.equal(onClaudePost(bash('wc -l a.md; cat a.md', F.logSpam)), null);
   assert.equal(onClaudePost(bash('cd x && head -500 server.log', F.logSpam)), null);
+  // rtk's hook rewrites reads before PostToolUse sees them.
+  assert.equal(onClaudePost(bash('cd "x" && rtk read a.json b.json; rtk wc -l a.js', F.logSpam)), null);
+  assert.equal(onClaudePost(bash('rtk read server.log --max-lines 500', F.logSpam)), null);
   // PowerShell's head/tail: the model picked those lines.
   const ps = (command) => ({ ...bash(command, F.logSpam), tool_name: 'PowerShell' });
   assert.equal(onClaudePost(ps('mvn -B verify 2>&1 | Select-Object -Last 300')), null);
@@ -134,6 +137,7 @@ test('explicit file reads pass through untouched; shell greps get the per-file c
   const out = onClaudePost(bash('grep -rn "const cat" lib', hits)).hookSpecificOutput.updatedToolOutput.stdout;
   assert.match(out, /lib\/m0\.mjs: … 65 more matches in this file/);
   assert.match(out, /grep-cap/);
+  assert.match(onClaudePost(bash('rtk grep -rn "const cat" lib', hits)).hookSpecificOutput.updatedToolOutput.stdout, /grep-cap/);
 });
 
 test('cross-call dedup answers a repeat with a pointer', () => {

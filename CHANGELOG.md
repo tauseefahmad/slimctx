@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3 — 2026-10-28
+
+- Explicit reads and greps rewritten by rtk's hook (rtk read, rtk grep) are now recognised, so slimctx no longer truncates files the model asked to read when both plugins are installed
+
 ## 0.1.2 — 2026-10-25
 
 - PowerShell 'Select-Object -First/-Last N' now counts as an explicit read, like head/tail, so the lines the model picked are never cut
