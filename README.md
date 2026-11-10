@@ -4,7 +4,7 @@
 [![release](https://img.shields.io/github/v/release/tauseefahmad/slimctx)](https://github.com/tauseefahmad/slimctx/releases)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**slimctx** is a free, open-source plugin for **Claude Code** and **OpenAI Codex CLI** that lowers token usage and cost. It condenses tool output (git, tests, builds, installs, logs, JSON, file lists, grep) before the model reads it. Measured on a real repository, it cut **80% of tool-output tokens**. Nothing is lost: every condensed output keeps its untouched original on disk, and the footer gives the path, so the agent can read it back.
+**slimctx** is a free, open-source plugin for **Claude Code** and **OpenAI Codex CLI** that lowers token usage and cost. It condenses tool output (git, tests, builds, installs, logs, JSON, file lists, grep) before the model reads it. Measured on a real repository, it cut **85% of tool-output tokens**. Nothing is lost: every condensed output keeps its untouched original on disk, and the footer gives the path, so the agent can read it back.
 
 Node ≥ 18, no other dependencies, no binary, no proxy, no network, no telemetry. It works alongside [rtk](https://github.com/rtk-ai/rtk) and [caveman](https://github.com/JuliusBrussee/caveman), or replaces them.
 
@@ -43,9 +43,9 @@ claude plugin install slimctx@slimctx
 | `npm ls --all` | 114 | 114 | 114 | 0% | 0% |
 | `ls -la` | 6,628 | 2,550 | 642 | 62% | 90% |
 | `find . -name "*.mjs"` | 24,339 | — | 1,420 | n/a | 94% |
-| `gh api …/issues?per_page=20` (JSON) | 46,122 | 46,122 | 16,290 | 0% | 65% |
+| `gh api …/issues?per_page=20` (JSON) | 44,510 | 44,510 | 9,593 | 0% | 78% |
 | `node --test <file>` (all passing) | 239 | 239 | 47 | 0% | 80% |
-| **total** | **149,004** | | **29,235** | | **80%** |
+| **total** | **147,392** | | **22,538** | | **85%** |
 
 **Replay on real history.** 339 real Bash results from a month of Claude Code transcripts were replayed through the hook: 0 errors. The saving was only **3%**, for two reasons. First, rtk was already filtering those sessions, so their output was already small. Second, most of the large outputs were deliberate file reads (`cat`, `sed -n`, `head`), and slimctx leaves those alone on purpose. If you already run rtk, slimctx's Bash compression adds little. Its value is everything rtk lacks: recoverable originals, Grep/Glob caps, outline-first reads, dedup, Codex coverage, and the reply-style rules.
 
@@ -145,7 +145,7 @@ rtk rewrites known commands before they run. caveman shortens Claude's replies. 
 No. Everything runs locally in Node. There is no network access and no telemetry.
 
 **How much does it save?**
-On the benchmark above, 80% of tool-output tokens. In a session that is mostly file reads, much less. `/slimctx:gain` reports your own numbers.
+On the benchmark above, 85% of tool-output tokens. In a session that is mostly file reads, much less. `/slimctx:gain` reports your own numbers.
 
 ## Develop
 
