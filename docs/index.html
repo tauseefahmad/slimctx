@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>slimctx — reduce Claude Code and Codex token usage (free plugin)</title>
-<meta name="description" content="slimctx is a free open-source plugin that cuts Claude Code and OpenAI Codex CLI token usage by condensing git, test, build, log, JSON and grep output before the model reads it. 85% fewer tool-output tokens on a real repo, nothing lost.">
+<meta name="description" content="slimctx is a free open-source plugin that cuts Claude Code and OpenAI Codex CLI token usage by condensing git, test, build, log, JSON and grep output before the model reads it. 84% fewer tool-output tokens on a real repo, nothing lost.">
 <meta name="keywords" content="reduce Claude Code token usage, Claude Code plugin, Codex CLI tokens, save tokens Claude, token compression, Claude Code hooks, rtk alternative, caveman alternative, context window, LLM cost">
 <link rel="canonical" href="https://tauseefahmad.github.io/slimctx/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="slimctx — reduce Claude Code and Codex token usage">
-<meta property="og:description" content="Free plugin: condenses tool output before Claude Code or Codex reads it. 85% fewer tool-output tokens on a real repo, originals always recoverable.">
+<meta property="og:description" content="Free plugin: condenses tool output before Claude Code or Codex reads it. 84% fewer tool-output tokens on a real repo, originals always recoverable.">
 <meta property="og:url" content="https://tauseefahmad.github.io/slimctx/">
 <meta name="twitter:card" content="summary">
 <meta name="color-scheme" content="light dark">
@@ -73,7 +73,7 @@ footer{margin-top:64px;color:var(--muted);font-size:.9rem}
 <a class="cta" href="https://github.com/tauseefahmad/slimctx">View on GitHub</a>
 
 <div class="stats">
-  <div class="stat"><b>85%</b><span>fewer tool-output tokens on a real repository</span></div>
+  <div class="stat"><b>84%</b><span>fewer tool-output tokens on a real repository</span></div>
   <div class="stat"><b>0</b><span>dependencies besides Node 18+</span></div>
   <div class="stat"><b>2</b><span>hosts: Claude Code and Codex CLI</span></div>
   <div class="stat"><b>100%</b><span>local — no network, no telemetry</span></div>
@@ -107,7 +107,7 @@ claude plugin install slimctx@slimctx</code></pre>
 <tr><td>git diff HEAD~3</td><td class="n">50,456</td><td class="n">11,719</td><td class="n">4,995</td></tr>
 <tr><td>ls -la</td><td class="n">6,628</td><td class="n">2,550</td><td class="n">642</td></tr>
 <tr><td>find . -name "*.mjs"</td><td class="n">24,339</td><td class="n">—</td><td class="n">1,420</td></tr>
-<tr><td>gh api …/issues (JSON)</td><td class="n">44,510</td><td class="n">44,510</td><td class="n">9,593</td></tr>
+<tr><td>gh api …/issues (JSON)</td><td class="n">61,882</td><td class="n">61,882</td><td class="n">13,265</td></tr>
 <tr><td>git status</td><td class="n">275</td><td class="n">147</td><td class="n">213</td></tr>
 </tbody></table></div>
 <p>Estimated tokens. rtk does better on short <code>git status</code>; slimctx does better on long output, and keeps the original recoverable. Full table and method are in the <a href="https://github.com/tauseefahmad/slimctx#benchmark-slimctx-vs-rtk-on-real-output">README</a>.</p>
